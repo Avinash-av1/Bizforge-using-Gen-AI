@@ -1,5 +1,4 @@
 const API_BASE = "https://bizforge-using-gen-ai.onrender.com";
-const BACKEND_URL = "http://127.0.0.1:8000";
 
 // ---------------- COMMON OUTPUT HANDLER ----------------
 
@@ -18,7 +17,7 @@ async function generateBrand() {
     return;
   }
 
-  const response = await fetch(`${API_BASE}/generate-brand`, {
+  const response = await fetch(`${API_BASE}/api/generate-brand`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -44,7 +43,7 @@ async function generateContent() {
     return;
   }
 
-  const response = await fetch(`${API_BASE}/generate-content`, {
+  const response = await fetch(`${API_BASE}/api/generate-content`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -69,7 +68,7 @@ async function analyzeSentiment() {
     return;
   }
 
-  const response = await fetch(`${API_BASE}/analyze-sentiment`, {
+  const response = await fetch(`${API_BASE}/api/analyze-sentiment`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -95,7 +94,7 @@ async function generateLogo() {
 
   document.getElementById("output").innerText = "Generating logo...";
 
-  const response = await fetch(`${API_BASE}/generate-logo-image`, {
+  const response = await fetch(`${API_BASE}/api/generate-logo-image`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -131,7 +130,6 @@ async function sendChat() {
 
   if (!msg) return;
 
-  // User message
   const userMsg = document.createElement("div");
   userMsg.className = "ai-message ai-user";
   userMsg.textContent = msg;
@@ -140,14 +138,13 @@ async function sendChat() {
   input.value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  // Loading
   const loading = document.createElement("div");
   loading.className = "ai-message ai-bot";
   loading.textContent = "Thinking…";
   chatBox.appendChild(loading);
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/chat`, {
+    const res = await fetch(`${API_BASE}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: msg })
@@ -170,52 +167,7 @@ async function sendChat() {
   }
 }
 
-// ---------------- LIVE VOICE → CHATBOT (GOOGLE STYLE) ----------------
-
-let recognition;
-let listening = false;
-
-function startListening() {
-  if (!("webkitSpeechRecognition" in window)) {
-    alert("Voice recognition not supported in this browser");
-    return;
-  }
-
-  // Auto-open chatbot
-  document.getElementById("aiPanel").classList.remove("hidden");
-
-  if (!recognition) {
-    recognition = new webkitSpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = (event) => {
-      const text = event.results[0][0].transcript;
-
-      // 🎯 PUT VOICE TEXT INTO CHAT INPUT
-      document.getElementById("chatInput").value = text;
-
-      // 🔥 AUTO-SEND TO CHATBOT
-      sendChat();
-    };
-
-    recognition.onerror = stopListening;
-    recognition.onend = stopListening;
-  }
-
-  if (!listening) {
-    recognition.start();
-    listening = true;
-    document.getElementById("micBtn")?.classList.add("listening");
-  }
-}
-
-function stopListening() {
-  listening = false;
-  document.getElementById("micBtn")?.classList.remove("listening");
-}
-// ---------------- BRANDING CHAT (MAIN UI) ----------------
+// ---------------- MAIN BRANDING CHAT ----------------
 
 async function chatAI() {
   const message = document.getElementById("inputText").value.trim();
@@ -229,18 +181,16 @@ async function chatAI() {
     "Consulting branding expert...";
 
   try {
-    const response = await fetch(`${API_BASE}/chat`, {
+    const response = await fetch(`${API_BASE}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: message
-      })
+      body: JSON.stringify({ message })
     });
 
     const data = await response.json();
     showOutput(data.data);
 
-  } catch (error) {
+  } catch {
     document.getElementById("output").innerText =
       "Error connecting to branding service.";
   }
