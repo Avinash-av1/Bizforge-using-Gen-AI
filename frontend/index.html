@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BizForge – GenAI Branding Platform</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+  <div class="nav-brand">BizForge 🚀</div>
+  <ul class="nav-links">
+    <li onclick="generateBrand()">Brand Names</li>
+    <li onclick="generateContent()">Marketing Content</li>
+    <li onclick="analyzeSentiment()">Sentiment Analysis</li>
+    <li onclick="generateLogo()">Generate Logo</li>
+    <li onclick="chatAI()">Branding Chat</li>
+  </ul>
+</nav>
+
+<!-- ============ MAIN BODY ============ -->
+<main class="main-container">
+
+  <h2>GenAI-powered branding automation</h2><br><br>
+
+  <div class="inputs">
+    <input id="brandName" placeholder="Brand Name">
+    <input id="industry" placeholder="Industry">
+  </div>
+
+  <textarea id="inputText" placeholder="Enter your idea / text here..."></textarea>
+
+  <section class="result-section">
+    
+    <pre id="output">Results will appear here...</pre>
+  </section>
+
+  <div class="logo-container" id="logosection" style="display:none">
+    <h3>Generated Logo</h3>
+    <img id="logoImage">
+  </div>
+
+</main>
+
+<!-- ============ FLOATING CHATBOT ============ -->
+<button class="ai-toggle" onclick="toggleChat()">🤖</button>
+
+<!-- ================= RIGHT SLIDE CHAT ================= -->
+<div id="chatPanel" class="chat-panel">
+
+  <div class="chat-header">
+    <span>BizForge AI</span>
+    <button onclick="toggleChat()">✕</button>
+  </div>
+
+  <div id="chatBox" class="chat-body">
+    <div class="ai-message ai-bot">
+      Hello 👋 I’m BizForge AI. Ask me anything about branding or startups.
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input id="chatInput" placeholder="Ask BizForge AI..."
+      onkeypress="if(event.key==='Enter') sendChat()">
+    <button onclick="sendChat()">Send</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
